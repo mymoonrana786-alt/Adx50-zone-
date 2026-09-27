@@ -1,0 +1,8 @@
+{
+  "name": "Binance Futures Scanner Pro",
+  "description": "Binance Futures 30-Quant Matrix & 15m ADX 50 Climax Scanner with instant Gmail alert notifications for moonrana825@gmail.com.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
