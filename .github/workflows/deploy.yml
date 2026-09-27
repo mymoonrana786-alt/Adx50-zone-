@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -26,14 +26,40 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Prepare Clean Web Assets
+        run: |
+          mkdir -p public
+          cp -f index.html public/
+          cp -f index.html public/404.html
+          cp -f quant30.js public/ 2>/dev/null || true
+          cp -f quant30_ui.js public/ 2>/dev/null || true
+          cp -f leading-indicators.js public/ 2>/dev/null || true
+          touch public/.nojekyll
+
+      # 1. Deploy directly to gh-pages branch (works with standard GitHub Pages repository settings)
+      - name: Deploy to GitHub Pages (gh-pages branch)
+        uses: peaceiris/actions-gh-pages@v4
+        continue-on-error: true
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+          force_orphan: true
+
+      # 2. Deploy via GitHub Actions Pages (works if Settings -> Pages -> Source is "GitHub Actions")
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        continue-on-error: true
         with:
-          path: '.'
+          enablement: true
 
-      - name: Deploy to GitHub Pages
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        continue-on-error: true
+        with:
+          path: './public'
+
+      - name: Deploy to GitHub Pages (Actions Artifact)
         id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@v4

@@ -228,15 +228,15 @@ function startServerOnPort(port, label) {
   return server;
 }
 
-// Ensure server listens on Cloud Run PORT (e.g. 8080) and Dev Port (3000)
+// Ensure server listens on Dev Port (3000)
 const portsToListen = new Set();
-if (envPort) {
+portsToListen.add(devPort);
+if (envPort && envPort !== 8080 && envPort !== devPort) {
   portsToListen.add(envPort);
 }
-portsToListen.add(devPort);
 
 for (const port of portsToListen) {
-  startServerOnPort(port, port === envPort ? `Cloud Run / PORT (${port})` : `Dev Port (${port})`);
+  startServerOnPort(port, `Port (${port})`);
 }
 
 // Global process error handlers
